@@ -1,0 +1,816 @@
+Para sabermos quais processos estão sendo executados no momento, usamos o comando ps no Terminal.
+
+Quando invocamos um programa, um processo será criado. Basicamente, um processo é um programa em execução
+
+ps
+ps -e : informar os programas executados no sistema.
+
+A lista gera o PID, esse pid são os id dos programas instalados. Para finaliza-los, podemos utilizar o kill + o numero do PID
+
+kill 16546
+
+Alguns programas quando abertos, mostrarão umas msg de alerta para dizer que forma fechados de formas diferentes.
+
+kill -9 16546
+
+A diferença para do kill com e sem o modificador -9 é simples: sem o modificador, o comando solicita o fechamento do programa, dando uma chance para o programa se encerrar sozinho, com o modificador essa chance não existe, o processo é encerrado imediatamente.
+
+Podemos mostrar mais detalhes sobre os processos Para isso fazemos ps -ef, este comando mostra a localização dos programas, o instante em que eles foram inicializados e outras informações.
+
+Porém ainda fica difícil encontrar um programa que estejamos procurando com essa listagem enorme de processos. Podemos usar o comando ps -ef | grep NomeDoPrograma para filtrar os resultados da listagem:
+
+ps -ef | grep firefox
+
+O comando grep é utilizado para filtragem de dados dada uma entrada,
+
+O | é um redirecionador de saídas de programas para programas
+
+ou seja, ele redireciona a saída do comando ps para ser usada como entrada para o comando grep. Por isso, são mostrados apenas as linhas que possuam a palavra firefox:
+
+O comando grep também serve para pesquisarmos linhas com palavras
+grep California google.txt
+o utilizaremos sempre que precisarmos encontrar os processos que queremos encerrar ou obter informações.
+
+Considerando que o seu diretório atual é o diretório do seu usuário (/home/nome_do_seu_usuario), você deve passar o caminho do diretório onde o arquivo work.zip ficou após o download. No meu caso, ele se encontra em Downloads:
+
+$ unzip Downloads/work.zip
+
+
+Para obter a lista com todos os processos do sistema com informações completas, como por exemplo, a hora em que o processo foi criado
+
+$ ps -ef
+
+Para obter a lista com todos os processos, passamos o parâmetro -e para o comando ps. Para obter mais informações além das que o comando ps nos mostra por padrão, utilizamos o parâmetro -f. Podemos combinar os dois comandos:
+
+$ ps -ef
+
+
+o unzip por padrão extrai os arquivos para o diretório atual, se não indicarmos outro diretório específico. Para fazer da maneira que você deseja temos que usar a flag -d para indicar qual o diretório em que queremos extrair, para isso podemos usar o comando da seguinte forma:
+
+unzip ~/Downloads/work.zip -d ~/Documentos/
+Note que o ~/ indica o diretório do usuário ou seja ´/home/lucas´. Mas você também poderia fazer:
+
+unzip ~lucas/Downloads/work.zip -d ~lucas/Documentos/
+Porém não precisamos dizer qual o usuário, já que o ~/ significa o diretório home do usuário logado.
+
+para imprimir, no terminal, as linhas que contêm o termo "Larry Page and Sergey Brin" no nosso arquivo google.txt
+Para obter apenas as linhas que contêm o termo "Larry Page e Sergey Brin", podemos utilizar o comando cat. Feito isso, podemos redirecionar a saída do cat para o comando grep, que se encarrega de realizar o filtro que desejamos. O comando final fica:
+
+$ cat google.txt | grep "Larry Page and Sergey Brin"
+
+
+
+Os processos utilizam sinais para se comunicar entre si. Sinais também são utilizados pelo Linux para interferir no funcionamento dos processos.
+
+Exemplos de sinais são o STOP e o CONT, que podem ser utilizados, respectivamente, para interromper a execução de um processo e retornar à execução do processo que foi interrompido anteriormente
+
+Imagine que temos um processo com pid = 11163 no nosso sistema:
+
+$ kill -STOP 11163
+$ kill -CONT 11163
+
+
+Para encerrar um processo de forma que ele possa realizar algumas tarefas antes de ser encerrado, utilizamos o sinal TERM. Quando não indicamos nenhum sinal para o comando kill, é o sinal TERM que é executado por padrão. Portanto, o comando que podemos utilizar para encerrar o processo de uma maneira mais educada é:
+
+$ kill -TERM 11269
+
+Em alguns momentos mais críticos precisamos encerrar um processo à força. Precisamos "matar" o processo. Nesse caso utilizamos o sinal KILL, que é também representado com o número -9. Então para garantir que o programa será encerrado imediatamente, fazemos:
+
+$ kill -9 11364
+
+Os processos consomem uma determinada quantidade de espaço na CPU, mas como podemos descobrir esse consumo? Para isso o Linux disponibiliza um comando chamado top
+
+ps -ef | grep top
+Veremos a listagem filtrada exibindo apenas os processos que estão executando o comando top.
+
+Poderíamos usar o comando kill fornecendo todos os IDs da seguinte maneira:
+
+kill -9 16905 16977
+
+Ou usando um outro comando que chamado killall. Ele permite matar todos os processos de um mesmo programa com um mesmo nome
+
+killall top
+
+Podemos usar o modificador - 9 igual fazemos com o comando kill
+killall -9 top
+
+O comando top serve para listar os processos do Linux. A diferença entre o top e o ps é que o top atualiza as informações de tempos em tempos.
+
+No seu cabeçalho, o top mostra algumas informações sobre o sistema, como a quantidade de memória disponível e em uso, informações sobre o uso do processador, etc.
+
+Na lista dos processos também temos informações sobre a utilização do processador e da memória. Os processos são ordenados, por padrão, pelo uso do processador.
+
+Para acompanhar as informações de um processo específico, podemos utilizar a opção -p passando como argumento o PID do processo:
+
+$ ps -e | grep firefox
+19509 ?        00:00:03 firefox
+$ top -p 19509
+
+Por padrão, o top atualiza a tela com novas informações sobre os processos a cada 3 segundos. Para alterar esse tempo basta pressionar d enquanto estiver rodando o top, inserir o valor desejado e pressionar a tecla Enter:
+
+Change delay from 3,0 to 1
+
+1 jobs: mostra os processos que estão sendo executados dentro do bash;
+
+2 fg e bg: jogam os processos para foreground e background, respectivamente;
+
+3 [programa] &: abre o [programa] diretamente em background;
+
+4 pstree: mostra todos os processos em um gráfico de árvore.
+
+Mas perceba que é um pouco trabalhoso jogarmos um programa para background: temos que abri-lo, fazê-lo parar e dar o comando necessário. Podemos fazer isso direto, ao abrirmos o programa da seguinte forma:
+
+firefox &
+
+Para jogar o Firefox no background, ou seja, para ser executado em segundo plano, usamos o comando bg+ seu número de identificação, neste caso executamos bg 1 ou só bg se houver apenas um programa na lista de processos pausados. Este comando apresentará uma saída semelhante a listada abaixo:
+
+[1]+ firefox &
+
+E assim nosso bash fica destravado, mesmo executando o Firefox. A presença do & da saída anterior, significa que o programa está rodando no background. E se executarmos novamente o comando jobs, veremos algo como:
+
+[1]+    Running             firefox &
+
+Também podemos encerrar a execução do programa de vez, para isso basta que apertemos as teclas: CTRL + C.
+
+No Linux, um processo pode criar outros processos, mantendo assim uma hierarquia, onde cada processo pode dar origem a novos processos. 
+
+O comando que nos mostra a árvore de processos é o pstree. Esse comando nos mostra um diagrama no qual é possível identificar quem originou (processo pai) cada um dos processos (processo filho).
+
+
+$ pstree
+
+Se utilizarmos o comando Ctrl + z conseguimos que o terminal fique livre para o uso, porém paramos o programa e não conseguiremos utilizá-lo. Pra que o programa volte a ser executado em background utilizamos o comando bg.
+
+Para saber quais processos estão sendo executados em background e quais processos estão parados no nosso terminal, utilizamos o comando jobs.
+
+$ jobs
+
+
+
+
+
+O bash suporta uma linguagem que nos permite criar nossos próprios 
+programas, nossos próprios scripts.
+
+Podemos executar nosso programa digitando o comando dorme, ou seja, o nome do programa, porém, caso façamos isso, teremos uma mensagem de erro, algo como: dorme: command not found. Isso por que o bash não conseguiu encontrar nosso programa, podemos realizar a execução direta do programa pedindo para o bash executá-lo da seguinte forma com comando sh:
+
+sh dorme
+
+Perceba que para programas como o Firefox ou o gedit não é necessário digitar o comando sh antes, mesmo sendo eles scripts ou programas binários, veremos como fazer isso, porém, precisamos falar um pouco sobre permissões.
+
+Permissões
+
+Os arquivos no Linux podem ter permissões para leitura (r), escrita (w) e execução (x). Essas permissões são distribuídas para o dono do arquivo, ao grupo de usuários e também para outros usuários. Os diretórios (d) sofrem das mesmas regras. 
+
+Com o comando ls -l, podemos verificar a listagem de arquivos com todas as informações de permissões discutidas
+
+O primeiro digito - informa que este item não é um diretório, os três seguintes indicam que o usuário dono do arquivo tem as permissões de leitura e escrita, o mesmo se repete para o grupo e por último, vemos que publicamente, ou seja, para outros usuários só há a permissão de leitura.
+
+Se quisermos que o arquivo dorme possa ser executado, ele precisará dessa permissão. Então vamos adicionar a permissão de execução para o script dorme para todos os usuários com a ajuda do comando chmod:
+
+chmod +x dorme
+Dessa maneira adicionamos a capacidade de execução ao arquivo dorme (para retirá-la usamos -x), utilizando o comando ls -l novamente podemos verificar se a mudança realmente foi aplicada:
+
+Perceba que a permissão de execução foi aplicada tanto para dono e grupo, quanto para outros usuários. Ainda não podemos simplesmente digitar o nome do script por questões de localização, então, para executá-lo teremos que usar ./, para indicar que o script está salvo no diretório atual:
+
+./dorme
+Assim como temos o +x para adicionar permissão de execução, temos também o +r e o +w. Podemos também combinar essas permissões da seguinte forma: chmod +rwx.
+
+O ~ em ~/workspace/ é um atalho para representar o diretório do usuário. Sempre que quisermos nos referir ao diretório do usuário (/home/nome_do_usuario/), podemos utilizar o ~. Dessa forma independente de qual seja o nosso diretório atual, o comando zip saberá onde o diretório workspace se encontra.
+
+
+
+
+Utilizamos diversos programas até este agora e até criamos o nosso próprio script, mas onde será que estão, por exemplo, o Firefox, o gedit ou o VI? O modo mais simples de procurar por arquivos é utilizando o comando locate:
+
+locate firefox
+
+O Linux verifica a todo momento quando criamos, renomeamos, etc, um arquivo, e atualiza seu banco de dados interno com a localização de todos os arquivos no sistema operacional
+
+A atualização ocorre de tempos em tempos, mas se quisermos forçar essa atualização podemos executar o comando updatedb.
+
+Esse update é executado globalmente no Sistema Operacional e para que possamos realizar essa atualização, precisamos executar esse comando como super usuário.
+
+Para executar um programa como super usuário, ou seja, como usuário principal da máquina usamos o comando sudo antes do comando a ser executado, por exemplo:
+
+sudo updatedb
+
+Quando executarmos o comando dessa forma, o Terminal pedirá uma senha, que é a do seu usuário atual e logo depois disso executará a ação como root (o super usuário da nossa máquina) que neste caso será atualizar o banco de dados interno com a localização dos arquivos no sistema operacional. Apesar disso ser possível, lembre-se, a atualização acontece periodicamente de forma automática.
+
+O locate suporta coringas. Faça uma busca por todos os arquivos com extensão .txt.
+
+
+Para saber onde os programas estão instalados usamos o comando which, seguido do nome do programa que desejamos localizar:
+
+Os programas que executamos antes estão todos dentro de um mesmo diretório chamado /usr/bin. Podemos listar todos os programas dentro desta pasta usando o comando ls da seguinte forma: ls /usr/bin, nos será listado uma lista enorme de programas do Linux.
+
+Já que os programas ficam instalados nesse diretório, vamos colocar aquele arquivo/programa que criamos em aulas passadas, o dorme, dentro desse diretório. Isso com a ajuda do comando mv:
+
+mv dorme /usr/bin
+
+É preciso um cuidado especial ao realizar tarefas como root. Este usuário por ser o principal no sistema operacional, tem permissões para todas as operações, inclusive destrutivas, que farão o sistema parar de funcionar completamente.
+
+Para isso precisaremos mover o programa para o diretório como usuário root, ou seja, como se nosso usuário padrão fosse o usuário root, para isso, antes do comando usamos um comando auxiliar, o sudo:
+
+sudo mv dorme /usr/bin
+
+O Terminal pedirá a senha de usuário. Depois disso conseguimos executar esse comando como se fôssemos o usuário principal. Para termos certeza de que conseguimos mover o dorme para dentro do diretório bin, podemos executar:
+
+ls /usr/bin | grep dorme
+Ou até mesmo usar o comando which:
+
+which dorme
+
+Agora podemos executar o dorme sem adicionar o sh ou o ./.
+
+
+Vamos mudar a senha do nosso usuário guilherme, para isso usamos o comando passwd. O Terminal irá pedir a senha atual, se houver, e depois duas vezes a nova senha.
+
+Esta senha, será para o usuário padrão, para o usuário guilherme, caso queiramos trocar ou colocar uma senha para o usuário root fazemos uso do comando sudo da seguinte forma: sudo passwd.
+
+Podemos nos logar como outro usuário, para isso usamos o comando su seguido do nome do usuário com qual queremos logar:
+
+su root
+Assim podemos nos logar como o usuário root, basta que digitemos a senha do usuário, podemos descobri também com qual usuário estamos logado usando o comando whoami. E podemos sair da sessão de um usuário usando o comando exit.
+
+Com esse comando $ passwd vamos alterar apenas a senha do usuário atual e não a senha do usuário root.
+
+Esse comando $ passwd root funciona apenas se tivermos como o usuário root.
+
+Com esse comando vamos conseguir alterar a senha do usuário root caso já exista uma senha ou criar uma nova se não tiver senha.
+$ sudo passwd
+Para alterar a senha do usuário atual, utilizamos o comando passwd. Para alterar a senha do usuário root, utilizamos $ sudo passwd. Como não havia sido definido uma senha antes, a senha será criada. Caso já exista uma senha, a senha atual será solicitada, e depois conseguiremos digitar a nova senha. Considere que não há senha definida para o root.
+
+Para conseguir se logar com outro usuário dentro de uma sessão do terminal, utilizamos o comando su:
+
+$ su nico
+O su por padrão, caso não seja passado o nome de um usuário, irá logar-se como o usuário root, então os comandos abaixo são equivalentes:
+
+$ su root
+Password:
+$ su
+Password:
+Mas lembre-se que é preciso ter cuidado, e não é uma boa prática fazer tudo como usuário root. Quando realizar tarefas que necessitam de poderes de administrador, podemos sempre utilizar o comando sudo.
+
+
+
+
+Para conseguir se logar com outro usuário dentro de uma sessão do terminal, utilizamos o comando su:
+
+$ su nico
+O su por padrão, caso não seja passado o nome de um usuário, irá logar-se como o usuário root, então os comandos abaixo são equivalentes:
+
+$ su root
+Password:
+$ su
+Password:
+Mas lembre-se que é preciso ter cuidado, e não é uma boa prática fazer tudo como usuário root. Quando realizar tarefas que necessitam de poderes de administrador, podemos sempre utilizar o comando sudo.
+
+Para conseguir se logar com outro usuário dentro de uma sessão do terminal, utilizamos o comando su:
+
+$ su nico
+O su por padrão, caso não seja passado o nome de um usuário, irá logar-se como o usuário root, então os comandos abaixo são equivalentes:
+
+$ su root
+Password:
+$ su
+Password:
+Mas lembre-se que é preciso ter cuidado, e não é uma boa prática fazer tudo como usuário root. Quando realizar tarefas que necessitam de poderes de administrador, podemos sempre utilizar o comando sudo.
+
+Para conseguir se logar com outro usuário dentro de uma sessão do terminal, utilizamos o comando su:
+
+$ su nico
+O su por padrão, caso não seja passado o nome de um usuário, irá logar-se como o usuário root, então os comandos abaixo são equivalentes:
+
+$ su root
+Password:
+$ su
+Password:
+Mas lembre-se que é preciso ter cuidado, e não é uma boa prática fazer tudo como usuário root. Quando realizar tarefas que necessitam de poderes de administrador, podemos sempre utilizar o comando sudo.
+
+
+
+
+Para conseguir se logar com outro usuário dentro de uma sessão do terminal, utilizamos o comando su:
+
+$ su nico
+O su por padrão, caso não seja passado o nome de um usuário, irá logar-se como o usuário root, então os comandos abaixo são equivalentes:
+
+$ su root
+Password:
+$ su
+Password:
+Mas lembre-se que é preciso ter cuidado, e não é uma boa prática fazer tudo como usuário root. Quando realizar tarefas que necessitam de poderes de administrador, podemos sempre utilizar o comando sudo.
+
+
+Já aprendemos como trocar de usuário usando o comando su. Mas como adicionamos um usuário novo na máquina? Basta usarmos o comando adduser seguido do nome do usuário, como por exemplo:
+
+adduser jose
+
+Outro ponto importante a ser destacado com o qual teremos que ter cuidado é que, independente do usuário no qual estamos conectados, sempre temos permissão de leitura para o diretório de outro usuário. Então vamos ver como bloquear essa leitura em nossos diretórios pessoais.
+
+Se verificarmos as permissões dos diretórios pessoais de cada usuário usando o comando ls -l no diretório '/home', teremos:
+
+
+
+O comando chmod é seguindo de alguns operadores, que são: o para others, ou seja, outros usuários, o - indica uma remoção de permissão, o r e x indicam permissões de leitura e execução. Se quiséssemos tirar permissões do próprio usuário, seria: u-rx e para o grupo seria: g-rx.
+
+Agora se verificarmos novamente, veremos que o diretório do usuário jose não permite mais nenhuma operação para outros usuários:
+
+Lembre-se que para alterar as permissões devemos estar logados com o usuário nico, pois ele é o dono do diretório nico.
+
+Já sabemos que para alterar as permissões de arquivos ou diretórios, utilizamos o comando chmod. Como desejamos adicionar permissões de escrita para o grupo ao qual pertence o diretório do usuário, utilizamos o g, para grupo, e o +w, para adicionar permissão de escrita.
+
+$ chmod g+w nico/
+
+Para adicionar um novo usuário, utilizamos o comando adduser:
+
+$ sudo adduser jose
+Adding user `jose' ...
+Adding new group `jose' (1002) ...
+Adding new user `jose' (1002) with group `jose' ...
+Creating home directory `/home/jose' ...
+Copying files from `/etc/skel' ...
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+Changing the user information for jose
+Enter the new value, or press ENTER for the default
+    Full Name []:
+    Room Number []:
+    Work Phone []:
+    Home Phone []:
+    Other []:
+Is the information correct? [Y/n] Y
+Após a criação do usuário, podemos remover as permissões para a pasta desse usuário utilizando o comando chmod. Como queremos remover as permissões atuais, que são de leitura e execução, vamos utilizar -rx. Para indicar que desejamos remover as permissões apenas dos outros usuários que acessarem o diretório, vamos utilizar o o:
+
+$ su jose
+Password:
+$ cd /home/
+$ chmod o-rx jose/
+Podemos verificar que tudo ocorreu como esperado:
+
+$ ls -l
+total 28
+drwxr-x---  2 jose  jose   4096 Jan 31 06:30 jose
+drwx------  2 root  root  16384 Jan 16 17:07 lost+found
+drwxr-xr-x 31 lucas lucas  4096 Jan 31 06:11 lucas
+d-wx-wx--x  2 nico  nico   4096 Jan 30 16:53 nico
+Agora a pasta do usuário jose não possui permissões liberadas para os outros usuários.
+
+
+
+Quais arquivos de inicialização são lidos pelo shell? (configuração shell)
+Você pode personalizar o comportamento dos shells que você usa editando os "arquivos de inicialização" que são lidos quando um shell é iniciado. Esses arquivos costumam ser chamados de "arquivos ponto", pois seus nomes geralmente começam com um ponto (.)
+Observe que os "arquivos ponto" por usuário são procurados na sua pasta pessoal (designada por ~) e que geralmente não existem por padrão - você deve criá-los usando um editor de texto (por exemplo, 'pico'). Observe também que, como os nomes deles começam com um ponto, esses arquivos não são mostrados quando você faz 'ls' - você precisa usar a opção "-a": 'ls -a' para ver todos os arquivos.
+(Para listar apenas os arquivos cujos nomes começam com um ponto, use o comando 'ls -ld. *')
+As seguintes configurações geralmente são colocadas nos arquivos de inicialização do shell:
+- PATH de execução do shell (determina onde o shell procurará executáveis)
+- MANPATH (determina onde o programa 'man' procurará as páginas de manual)
+- aliases e funções do shell (usados ​​para salvar digitando)
+- solicitações de shell
+- outras variáveis ​​de ambiente
+
+Quais arquivos de inicialização são lidos dependem de qual shell você está usando (por exemplo, bash ou tcsh) e se é um "shell de login" ou um "shell sem login" . Observe, no entanto, que subconchas herdam as variáveis ​​de ambiente do shell pai. A seguir, é apresentado um resumo dos arquivos de inicialização usuais, lidos por shells "interativos". Veja a página 'man' relevante para detalhes completos (por exemplo, 'man bash' ou 'man tcsh').
+
+Nota: para fins de depuração, recomendo inserir um comando 'eco' em cada um dos arquivos de inicialização nomeados abaixo para que você possa ver quando eles são executados e em que ordem.
+Por exemplo: "echo now execute ~ / .profile"
+Observe também que não é recomendável editar os arquivos de inicialização fornecidos pelo sistema (os que estão na pasta "/ etc"), pois isso afetará todos os usuários e, portanto, você não poderá para usar a técnica de solução de problemas usual de fazer login como um usuário diferente, se você cometer um erro ao editar um desses arquivos.
+
+Arquivos de inicialização do Bash
+Quando um "shell de login" inicia, ele lê o arquivo "/ etc / profile" e, em seguida, "~ / .bash_profile" ou "~ / .bash_login" ou "~ / .profile" (o que houver) apenas lê um deles, verificando-os na ordem mencionada).
+
+Quando um "shell sem login" é iniciado, ele lê o arquivo "/ etc / bashrc" e depois o arquivo "~ / .bashrc".
+
+Observe que, quando o bash é chamado com o nome "sh", ele tenta imitar a sequência de inicialização do shell Bourne ("sh"). Em particular, um shell sem logon chamado como "sh" não lê nenhum arquivo de ponto por padrão. Veja a página de manual do bash para detalhes.
+
+Arquivos de inicialização do Tcsh
+Quando um "shell de login" é iniciado, ele lê os arquivos "/etc/csh.cshrc" e "/etc/csh.login" (nessa ordem) e depois "~ / .tcshrc" ou "~ / .cshrc "(o que existir - ele lê apenas um deles, verificando-os na ordem mencionada) e depois ~ / .login.
+
+Quando um "shell sem login" é iniciado, ele lê o arquivo "/etc/csh.cshrc" e, em seguida, "~ / .tcshrc" ou "~ / .cshrc" (o que existir, ele apenas lê um deles) .
+
+Uma ilustração
+A sequência a seguir mostra a inicialização de vários shells (sem login e login) como uma ilustração do que foi descrito acima. (O comando 'head' mostra as primeiras linhas de um arquivo - consulte 'man head' para obter detalhes.)
+
+ head -1 ~/.profile
+echo "*** now executing .profile"
+% head -1 ~/.bashrc
+echo "*** now executing .bashrc"
+% head -1 ~/.tcshrc
+echo "*** now executing .tcshrc"
+% head -1 ~/.login
+echo "*** now executing .login"
+% head -1 ~/.logout
+echo "*** now executing .logout"
+% /bin/bash
+*** now executing .bashrc
+% exit
+exit
+% /bin/sh
+% exit
+exit
+% /bin/bash -login
+*** now executing .profile
+% exit
+logout
+% /bin/sh -login
+*** now executing .profile
+% exit
+logout
+% /bin/tcsh
+*** now executing .tcshrc
+% exit
+exit
+% /bin/tcsh -l
+*** now executing .tcshrc
+*** now executing .login
+% exit
+logout
+*** now executing .logout
+
+Arquivos de inicialização para scripts de shell
+Existem regras ligeiramente diferentes sobre quais arquivos de inicialização são executados para shells não interativos (como usado em scripts de shell) - consulte a página de manual do bash para obter detalhes.
+Mas se você estiver escrevendo um script de shell, realmente não deve confiar em nenhum arquivo de inicialização
+- você deve fazer com que o script de shell configure o ambiente que for necessário.
+Em particular, você deve usar caminhos completos para todos os executáveis ​​e outros arquivos referidos pelo shell script, para que o PATH não seja relevante.
+
+
+Uma opção é como fizemos com o programa dorme: movê-lo para o diretório /usr/bin. Mas dessa forma todos os usuários passam a ter acesso a esse programa, o que não queremos. O diretório bin existe para armazenar programas globais, aos quais todos os usuários têm acesso. Além disso teríamos que mover todo o programa para esse diretório, o que daria muito trabalho se ele possuísse muitos arquivos.
+
+Precisamos saber onde o bash procura os programas e os scripts para executar. Esse lugar é o Path, uma Variável de Ambiente. Se executarmos o comando env conseguimos visualizar todas as variáveis de ambiente. Para visualizarmos apenas o PATH podemos fazer env | grep PATH, e na listagem, a linha que nos interessa é semelhante a apresentada na imagem a seguir:
+
+
+
+Agora conseguimos executar o script "oi" digitando apenas seu nome, em qualquer diretório que estivermos no bash.
+
+executando o programa oi diretamente
+
+Porém, se utilizarmos um outro bash no Terminal, a variável PATH volta a ter os mesmos diretórios por padrão, sem que o workspace esteja presente na listagem. O que fizemos no outro bash só fica gravado apenas naquela sessão e não globalmente.
+
+Experimente abrir uma nova aba no terminal e verificar a variavél PATH novamente. Verá que na listagem o diretório workspace deixou de existir.
+
+Precisamos de um arquivo o qual diga que, toda vez que abrirmos um bash, o PATH seja configurado como queremos. Tal arquivo já existe e tem o nome de .bashrc. Vamos editá-lo com o gedit:
+
+gedit .bashrc &
+Esse arquivo é carregado toda vez que abrimos uma aba nova no Terminal. Ele já possui vários comandos. O que vamos fazer é: Ao final dele vamos adicionar a seguinte linha e salvar:
+
+PATH=$PATH:/home/guilherme/workspace
+Dessa forma, para toda sessão e todo bash, o PATH será configurado para possuir o diretório que queríamos, permanentemente.
+
+Experimente verificar novamente, fechar o terminar, abri-lo, tentar executar o programa oi, abrir novas abas e verificar a variável PATH.
+
+
+As variáveis de ambiente são variáveis globais que podemos utilizar para definir configurações, personalizar nosso terminal.
+
+Quando executamos o comando env, podemos ver quais são as variáveis que estão definidas. A variável HOME, por exemplo, guarda o caminho para o diretório do usuário.
+
+A variável PATH, guarda informações de onde estão nossos arquivos executáveis para que possamos executar um comando sem a necessidade de digitar o caminho absoluto.
+
+Vamos assumir que scripts é nosso diretório atual. Primeiro criaremos o script contapalavras e adicionaremos permissão de execução:
+
+$ gedit contapalavras &
+[1] 6295
+$ chmod +x contapalavras
+Para adicionar o diretório scripts nas variáveis de ambiente do usuário, podemos editar o arquivo oculto .bashrc dentro do diretório do usuário.
+
+$ cd
+$ gedit .bashrc &
+Vamos adicionar o conteúdo após a última linha, no fim do arquivo:
+
+PATH=$PATH:/home/lucas/scripts
+Indicamos que a variável de ambiente PATH recebe o conteúdo já presente nela, mais o diretório scripts. Ao abrir um novo terminal, já conseguimos acessar o script contapalavras:
+
+$ contapalavras
+16 total
+
+
+Além de contar o número de palavras em um arquivo, o comando wc pode também contar o número de caracteres e linhas em um arquivo, ou em uma saída do terminal. Para isso, podemos utilizar a opção -c para caracteres e -l para linhas.
+
+Se utilizarmos o comando ps -e, que lista todos os processos, podemos passar o retorno do ps para o wc -l contar quantas linhas o retorno possui. A quantidade de linhas representa a quantidade de processos existentes no nosso sistema.
+
+Dentro do diretório scripts, crie um script chamado totaldeprocessos, com o seguinte conteúdo:
+
+ps -e | wc -l
+Lembre-se de adicionar permissão de execução no script.
+
+Tente executar o script alterando o seu diretório para um diferente de scripts, para testar se tudo funcionou bem.
+
+
+Vamos criar o arquivo, adicionar o comando e adicionar permissão de execução:
+
+$ gedit totaldeprocessos &
+[1] 6523
+$ chmod +x totaldeprocessos
+Agora podemos testar. O número retornado é o número de processos que o nosso sistema possui no momento:
+
+$ cd
+$ totaldeprocessos
+240
+Perceba que agora sempre que colocarmos um script no diretório scripts, ele poderá ser executado independentemente do diretório em que estejamos, pois scripts agora é um dos diretórios nos quais o comando será procurado pelo nosso bash.
+
+
+Nesta aula vamos aprender como instalar um programa via Terminal de Linux. Como exemplo, iremos instalar um servidor FTP.
+
+O Ubuntu nos disponibiliza um sistema de gerenciamento de pacotes chamado apt. Para ver as versões atualizadas dos programas que estão disponíveis para instalação fazemos:
+
+sudo apt-get update
+Veja que executamos o comando como root (sudo), isto porque esta é uma tarefa de administração, por isso é necessário que seja feita como root, caso não, teremos uma mensagem de permissão negada. Neste passo, o Terminal irá buscar na internet o que existe de novidade nos programas para instalação. Para buscar um programa de servidor FTP podemos fazer:
+
+apt-cache search ftp
+Este comando busca na lista de pacotes disponíveis, qualquer programa que se encaixe nesse termo de busca, por isso retorna uma longa lista de programas. Sejamos mais restritos na busca e procuremos um servidor específico:
+
+apt-cache search vsftp
+Como estamos usando uma busca mais restrita, poucos resultados serão retornados pela busca, a imagem abaixo ilustra esses resultados.
+Achamos um bom servidor FTP, ele nos mostra o nome e uma curta descrição. Para instalar este programa fazemos:
+
+sudo apt-get install vsftpd
+E após alguns segundos o programa está instalado! Será mesmo? Para testarmos, podemos tentar conectar ao servidor da própria máquina utilizando o comando:
+
+ftp localhost
+Será pedido um usuário e senha para podermos acessar a máquina
+
+Depois disso podemos manipular os arquivos via FTP executando quaisquer comandos que já aprendemos até agora, como ls e outros.
+
+Para encerrar a conexão, usamos o comando exit. Experimente conectar com outros usuários disponíveis na maquina também.
+
+Para que possamos remover programas, utilizamos o comando apt-get remove seguido do nome do programa. Como exemplo, vamos desinstalar o servidor que instalamos.
+
+sudo apt-get remove vsftpd
+Será pedida uma confirmação e depois a desinstalação seguirá normalmente. Garanta que a desinstalação foi feita com sucesso tentando fazer login via FTP novamente. Caso o programa realmente tenha sido desinstalado, uma mensagem de erro semelhante a seguinte deve ser impressa no Terminal.
+
+ftp: connect: Connection refused
+Aprendemos a instalar e desinstalar programas de forma fácil e prática com auxilio do gerenciador de pacotes apt. Os comandos são:
+
+apt-get install: instala um programa dado o nome
+apt-get remove: desinstala um programa dado o nome
+apt-get update: busca uma lista das versões atualizadas dos programas
+apt-cache search: procura os programas disponíveis para instalação
+
+
+Antes de instalar um programa, é recomendado atualizar a lista de pacotes disponíveis para instalação, para garantir que iremos instalar o pacote mais atual que está disponível nos repositórios. Como podemos atualizar essa lista?
+
+Para atualizar a lista de pacote que estão disponíveis para instalação, utilizamos o comando $ apt-get update. Lembre-se que é uma tarefa que exige poderes de administrador, por esse motivo utilizamos o comando sudo antes.
+
+A opção upgrade do apt-get, serve para atualizar todo o nosso sistema, atualizando as versões dos pacotes que já estão instalados.
+
+
+Para atualizar a lista de pacotes disponíveis, utilizamos o comando $ apt-get update.
+
+Para instalar um pacote, utilizamos o comando $ apt-get install nome_do_pacote. O apt-get é uma operação que necessita ser executada com poderes de administrador, por isso utilizamos o comando sudo antes do comando apt-get:
+
+$ sudo apt-get install vsftpd
+[sudo] password for lucas:
+Para realizar um teste, podemos nos conectar na nossa máquina:
+
+$ ftp localhost
+Connected to localhost.
+220 (vsFTPd 3.0.2)
+Name (localhost:lucas):
+Podemos ver que o programa de ftp foi instalado corretamente. Caso deseje, você pode fornecer usuário e senha, caso não, basta utilizar as teclas Ctrl + c.
+
+Para desinstalar o programa, fazemos:
+
+$ sudo apt-get remove vsftpd
+
+
+Podemos instalar programas que não estão disponibilizados na central de programas do Ubuntu, ou seja, sem o uso do apt. Para isso nós baixamos um pacote desse programa em um site e depois o instalamos. O formato desse pacote é dpkg, que é um arquivo com a extensão .deb.
+
+Vamos instalar novamente o servidor de FTP, porém, usando o pacote .deb. Procuramos na internet e baixamos via navegador o vsftpd no endereço: http://ftp.br.debian.org/debian/pool/main/v/vsftpd/vsftpd_3.0.2-17+deb8u1_i386.deb. Ele estará salvo no diretório de Downloads. Para instalar entramos nesse diretório com o comando cd e utilizando o comando dpkg fazemos:
+
+sudo dpkg -i vsftpd_3.0.2-17+deb8u1_i386.deb
+O -i indica que estamos instalando o programa. Lembre-se de que o nome do arquivo precisa ser fornecido e que o comando deve ser executado como root por causa de suas permissões. E para desinstalar um programa pelo dpkg? Muito simples, fazemos:
+
+sudo dpkg -r [nome do pacote]
+Perceba que para a desinstalação não usamos o nome do arquivo baixado, mas sim o nome do pacote do programa, que neste caso é vsftpd.
+
+sudo dpkg -r vsftpd
+Lembre-se de testar a instalação e desinstalação da mesma forma que fizemos na aula passada, efetue login, encerre a conexão, faça login com outros usuários, execute comandos via ftp.
+
+Então vimos duas formas de instalar e desinstalar programas no Linux:
+
+Via apt: quando o programa já está disponibilizado na central do Sistema Operacional Linux.
+
+Via dpkg: quando baixamos pelo navegador da internet um pacote .deb do programa.
+
+Para instalar um pacote do tipo .deb, utilizamos o comando dpkg e passamos a opção -i, de install:
+
+$ sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+No caso do Google Chrome, iremos receber alguns erros, pois o pacote depende de outros pacotes e o dpkg não resolveu isso pra gente. Para baixar as dependências e fazer com que o Google Chrome funcione corretamente, pedimos para o apt-get tentar resolver esse problema:
+
+$ sudo apt-get -f install
+
+Vamos considerar que o nosso diretório atual é o diretório em que se encontra o arquivo .deb. Após baixar o pacote, podemos instalar utilizando o comando dpkg:
+
+$ sudo dpkg -i vsftpd_3.0.3-2_amd64.deb
+[sudo] password for lucas: 
+Perceba que ocorreu um erro, pois o pacote do vsftpd necessita que outros pacotes estejam instalados. Até poderíamos instalar um por um manualmente, mas para tentar resolver isso de forma automática, fazemos:
+
+$ sudo apt-get -f install
+Para testar a instalação do vsftpd, você pode pressionar Ctrl + c:
+
+$ ftp localhost
+Connected to localhost.
+220 (vsFTPd 3.0.2)
+Name (localhost:lucas):
+Para remover podemos passar o nome do pacote:
+
+$ sudo dpkg -r vsftpd
+
+Para testarmos se o o vsftpd foi instalado corretamente, podemos tentar realizar uma conexão, ou, verificar se o processo deste programa está em execução com ajuda dos comandos ps e grep da seguinte forma:
+
+ps -ef | grep vsftpd
+
+O programa está em execução, podemos para-lo, mas ao invés de usarmos o comando kill, usaremos o comando service seguido do nome do programa, e um indicador de ação, neste caso stop, para que o programa pare sua execução. Usamos o comando servicepois o vsftpd é um serviço que roda toda vez que ligamos e desligamos a máquina.
+
+sudo service vsftpd stop
+Experimente verificar se o serviço realmente parou de executar como já fizemos com o comando ps.
+
+O comando service deve ser executado como root, caso não, teremos erros de permissão. Para ele voltar a execução, mudamos apenas a ação do comando service de stop para start:
+
+sudo service vsftpd start
+Por trás dos panos o que está realmente acontecendo é que um script de inicialização e desligamento (shutdown) que está localizado em /etc/init.d/vsftpd está sendo executado. Ele é executável! Sendo assim, podemos executá-lo diretamente:
+
+Lembre-se que podemos verificar se algo é executável ou não verificando suas permissões com o comando ls -l.
+
+Para encerrar a execução, fazemos:
+
+sudo /etc/init.d/vsftpd stop
+Para inicializa-lo novamente, fazemos:
+
+sudo /etc/init.d/vsftpd start
+O /etc/init.d/vsftpd é o script que, "educadamente", notifica o vsftpd para parar ou inicializar.
+
+Os scripts dentro do diretório /etc/init.d são os programas que são executados no startup da máquina. Eles podem continuar rodando até desligarmos o computador ou rodar por apenas um instante e depois parar. Caso queiramos que um programa seja executado sempre ao iniciar da máquina, basta que deixemos esse programa nesta pasta.
+
+
+Caso o servidor vsftpd não esteja instalado no seu sistema, instale através do comando:
+
+$ sudo apt-get install vsftpd
+Utilize o comando necessário para parar o servidor de ftp. Por fim, inicie novamente o serviço.
+
+Para parar um serviço, utilizamos o comando service, fornecendo o nome do serviço e o que desejamos fazer. Como queremos parar o serviço, utilizamos o stop:
+
+sudo service vsftpd stop
+Para iniciar novamente o serviço, utilizamos o start:
+
+sudo service vsftpd start
+
+
+Ao executar o comando ls /etc/init.d/, podemos verificar os serviços que possuímos no nosso sistema. No meu caso, obtive o seguinte retorno:
+
+$  ls /etc/init.d/
+acpid         cgmanager               dbus         kmod                   networking       reboot             thermald             vsftpd
+alsa-utils    cgproxy                 dns-clean    lightdm                network-manager  resolvconf         udev                 whoopsie
+anacron       checkfs.sh              grub-common  lvm2                   ondemand         rsync              ufw                  x11-common
+apparmor      checkroot-bootclean.sh  halt         mountall-bootclean.sh  pppd-dns         rsyslog            umountfs
+apport        checkroot.sh            hostname.sh  mountall.sh            procps           saned              umountnfs.sh
+avahi-daemon  console-setup           hwclock.sh   mountdevsubfs.sh       rc               sendsigs           umountroot
+bluetooth     cron                    irqbalance   mountkernfs.sh         rc.local         single             unattended-upgrades
+bootmisc.sh   cups                    kerneloops   mountnfs-bootclean.sh  rcS              skeleton           urandom
+brltty        cups-browsed            killprocs    mountnfs.sh            README           speech-dispatcher  uuidd
+
+
+
+Vimos até agora duas maneiras de instalar um programa no Linux:
+
+Via apt: quando o programa já está disponibilizado na central de programas do Ubuntu.
+
+Via dpkg: quando baixamos pelo navegador um pacote do programa com a extensão .deb.
+
+Porém, é possível que um programa não esteja disponível em nenhuma das duas formas. Nesse caso vamos ter que baixar seu código fonte, compilá-lo e instalá-lo. Faremos um teste baixando o código fonte de um projeto, o Git, um programa para controle de versão.
+
+Primeiro vamos entrar no site do git-scm em git-scm.com. Na aba Tarballs encontramos as versões compactadas do código fonte do Git. Lá, baixaremos a versão git-1.8.3.1.tar.gz. É importante que seja o tar.gz por que o mesmo mantém as permissões de execução dos arquivos, enquanto um .zip não mantém.
+
+No Terminal, entraremos no diretório de Downloads e descompactamos o arquivo com o comando tar:
+
+tar zxf git-1.8.3.1.tar.gz
+Será criado um diretório com nome git-1.8.3.1 com vários scripts que podem ser executados. Entraremos nele para os próximos passos.
+
+O padrão de criação para instalação de um projeto através do código fonte em C* é primeiramente testarmos a configuração da nossa máquina, ou seja, verificar se está faltando algum arquivo ou programa em nossa máquina que o *Git precise para funcionar. Para isso, em geral, é disponibilizado um script chamado "configure". O Git disponibiliza esse script, Vamos executá-lo:
+
+./configure
+O script configure fará uma série de checagens em nossa máquina, e ao fim, caso nenhum problema seja encontrado, poderemos usar o comando make, que é o padrão para rodar o build do projeto em C*, no caso do *Git. Porém o comando make nos retorna a seguinte mensagem:
+
+zlib not found - não encontrado o zlib
+
+O erro indica que não foi encontrada a biblioteca zlib.h. O script configure não apontou essa falta. Vamos ter que instalá-la manualmente. Seu nome é zlib1g-dev:
+
+sudo apt-get install zlib1g-dev
+Neste ponto, estamos informando diretamente o nome da biblioteca ser instalada, mas lembre-se, podemos buscar por seu nome através do apt-cache search zlib e usar o comando grep para filtragem: apt-cache search zlib | grep dev
+
+Agora sim o makeirá funcionar e gerar o Git. O próximo passo é, enfim, instalá-lo na nossa máquina:
+
+sudo make install
+Caso não haja nenhum erro, o comando git estará disponível no terminal. Experimente digitar git. Uma listagem de ajuda deverá ser exibida.
+
+Portanto, existem basicamente três passos para instalar um programa a partir de seu código fonte:
+
+./configure para verificar as dependências e configurações da máquina.
+
+make para gerar o programa, ou seja, compilar. Lembrando que, neste passo, pode haver outras dependências necessárias para a tarefa e por isso talvez seja preciso realizar instalações de outras bibliotecas.
+
+sudo make install para que o programa seja instalado em nossa máquina. Lembrando que o sudo é necessário por causa de questões de permissão.
+
+Estes mesmos passos podem se repetir para determinados programas onde as dependências não estejam disponíveis através de arquivos .deb ou na central de programas.
+
+
+Após baixar o pacote .tar.gz, vamos acessar a pasta em que se encontra o arquivo e descompactá-lo.
+
+Em seguida, vamos acessar a pasta criada após a descompactação.
+
+$ tar zxf git-2.7.1.tar.gz
+
+$ ls
+git-2.7.1  git-2.7.1.tar.gz
+
+$ cd git-2.7.1/
+Lembre-se que o formato .tar não compacta, apenas empacota. Esse formato é utilizado pois mantém as permissões que os arquivos possuíam antes do empacotamento. Após empacotar com o .tar podemos compactar utilizando outra ferramenta.
+
+Primeiro vamos executar o script configure, para verificar se está faltando algo para que o git possa funcionar corretamente.
+
+$ ./configure
+Vamos executar o comando make para realizar o build do nosso projeto. Mas nesse momento receberemos um erro, pois precisamos instalar uma dependência antes. Após instalar a dependência, podemos rodar o make.
+
+Por fim, para instalar o git, executamos um make install. Para instalar, é necessário permissões de administrador:
+
+$ sudo apt-get install zlib1g-dev
+$ make
+$ sudo make install
+
+Vamos aprender nesta aula como acessar um servidor remoto no Linux. Para isso, teremos que fazer uma comunicação com o outro servidor. Já vimos o FTP, mas o FTP é para troca de arquivos. O que queremos é nos logar como um usuário. Para isso iremos usar o SSH. O primeiro passo é instalá-lo:
+
+sudo apt-get install ssh
+Desta forma instala-se tanto o cliente SSH (ssh-client), quando o servidor (ssh-server). Para testarmos se o programa instalou corretamente, logaremos na nossa própria máquina utilizando o comando ssh, fornecendo o nome de um usuário já criado anteriormente e o ip da máquina.
+
+ssh jose@localhost
+Será pedida a senha do usuário jose e logo após, estaremos logados no servidor remoto. Poderemos executar uma série de comandos, porém não temos acesso às ferramentas e programas gráficos. Não podemos, por exemplo, abrir um navegador.
+
+Para termos essa permissão, precisamos nos conectar usando um modificador que permita o uso de ferramentas gráficas. O -X é esse modificador:
+
+ssh -X jose@localhost
+Para encerrar a conexão, usamos o comando exit da mesma forma que fizemos quando usamos o ftp.
+
+Lembrando que tudo o que estamos fazendo está sendo executado lá no servidor e não em nossa máquina. Somente o gráfico é mostrado em nossa máquina, as ações são todas remotas.
+
+Agora vamos ver como copiar um arquivo da nossa máquina local para a máquina remota. Fazemos por meio do comando scp, indicando para ele qual é o arquivo e qual é o destino do arquivo:
+
+scp work.zip jose@localhost:/home/jose
+/home/jose é a home do usuário jose e pode ser substituído por "~":
+
+scp work.zip jose@localhost:~/
+Com isso jogamos o arquivo work.zip no nosso servidor remoto. Se o buscarmos dentro da outra máquina, nos conectando novamente com o ssh e listarmos os arquivos com o comando ls iremos perceber que realmente ele foi copiado.
+
+Caso seja necessária a copia de arquivos de forma recursiva, pode-se utilizar a opção -r assim como era feito com os comandos mv e cp.
+
+Para realizar uma conexão ssh, basta indicar para o comando o nome do usuário e o ip da máquina que desejamos nos conectar. No nosso caso, utilizaremos localhost, pois a conexão será na nossa própria máquina:
+
+$ ssh jose@localhost
+jose@localhost's password:
+Ao executar o comando whoami, podemos perceber que estamos logados com o usuário jose:
+
+$ whoami
+jose
+Para desconectar, basta usar o comando exit:
+
+$ exit
+logout
+Connection to localhost closed.
+
+Para realizar a cópia, informamos o nome do arquivo para o comando scp junto com o nome do usuário, ip e local onde copiaremos o arquivo na máquina remota:
+
+$ scp work.zip jose@localhost:~/
+O ~ representa o diretório do usuário, que nesse caso é /home/jose/.
+
+Vamos nos conectar no usuário jose via ssh e verificar se o arquivo work.zip se encontra no diretório do usuário:
+
+$ ssh jose@localhost
+jose@localhost's password:
+
+$ whoami
+jose
+
+$ ls
+examples.desktop  work.zip
+Como podemos ver, o arquivo foi copiado.
+
+Lembre-se que o comando scp suporta a opção -r para realizar cópia de diretórios.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
